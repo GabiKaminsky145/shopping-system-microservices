@@ -1,0 +1,17 @@
+eureka:
+    client:
+        fetch-registry: false
+        register-with-eureka: false
+    instance:
+        hosname: localhost
+server:
+    port: 8761
+
+management:
+    endpoints:
+        web:
+            exposure:
+                include: '*'
+    tracing:
+        sampling:
+            probability: 1.0
