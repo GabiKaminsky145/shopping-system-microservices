@@ -4,6 +4,8 @@ eureka:
             defaultZone: http://localhost:8761/eureka
 server:
     port: 0
+    servlet:
+        context-path: /
 spring:
     application:
         name: product-service
@@ -20,3 +22,8 @@ management:
       sampling:
           probability: 1.0
 
+openapi:
+    service:
+        title: product-service doc #title that you will want to display in the swagger ui
+        version: 1.0.0
+        url: http://localhost:8080 #api gateway url
