@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.apigateway;
+package com.apigateway.Config;
 
 import org.springframework.boot.actuate.autoconfigure.tracing.BraveAutoConfiguration;
 import org.springframework.boot.actuate.autoconfigure.tracing.ConditionalOnEnabledTracing;

@@ -1,54 +1,80 @@
 eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka
+    client:
+        serviceUrl:
+            defaultZone: http://localhost:8761/eureka
 logging:
-  level:
-    org:
-      springframework:
-        cloud:
-          gateway: TRACE
-          gateway.route.RouteDefinitionRouteLocator: INFO
-    root: INFO
-
+    level:
+        org:
+            springframework:
+                cloud:
+                    gateway: TRACE
+                    gateway.route.RouteDefinitionRouteLocator: INFO
+        root: INFO
 
 management:
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-  tracing:
-    sampling:
-      probability: 1.0
+    endpoints:
+        web:
+            exposure:
+                include: '*'
+    tracing:
+        sampling:
+            probability: 1.0
+
+server:
+    servlet:
+        context-path: /
 
 spring:
+    application:
+        name: api-gateway-service
+    cloud:
+        gateway:
+            routes:
+                # Product Service
+                - id: product-service
+                  predicates:
+                      - Path=/api/product/createProduct, /api/product/productsList, /api/product/{id}
+                  uri: lb://product-service
 
-  application:
-    name: api-gateway-service
-  cloud:
-    gateway:
-      routes:
-        # Product Server
-        - id: product-service
-          predicates:
-            - Path=/api/product/createProduct, /api/product/productsList, /api/product/{id}
-          uri: lb://product-service
+                # Order Service
+                - id: order-service
+                  predicates:
+                      - Path=/api/order/placeOrder, /api/order/orderList
+                  uri: lb://order-service
 
-        # Order Server
-        - id: order-service
-          predicates:
-            - Path=/api/order/placeOrder, /api/order/orderList
-          uri: lb://order-service
+                 #Inventory Service
+                - id: inventory-service
+                  predicates:
+                    - Path=/v3/api-docs
+                  uri: lb://inventory-service
 
-        # Discovery Server
-        - id: discovery-server
-          predicates:
-            - Path=/eureka/web
-          filters:
-            - SetPath=/
-          uri: http://localhost:8761
+                # Discovery Server
+                - id: discovery-server
+                  predicates:
+                      - Path=/eureka/web
+                  filters:
+                      - SetPath=/
+                  uri: http://localhost:8761
 
-        - id: discovery-server-static
-          predicates:
-            - Path=/eureka/**
-          uri: http://localhost:8761
+                - id: discovery-server-static
+                  predicates:
+                      - Path=/eureka/**
+                  uri: http://localhost:8761
+
+
+springdoc:
+    api-docs:
+        enabled: true
+    swagger-ui:
+        enabled: true
+        path: /swagger-ui.html
+#        config-url: /v3/api-docs/swagger-config
+#        urls:
+#            - url: /v3/api-docs
+#              name: API Gateway Service
+#            - url: /product-service/v3/api-docs
+#              name: Product Service
+#            - url: /order-service/v3/api-docs
+#              name: Order Service
+#            - url: /inventory-service/v3/api-docs
+#              name: Inventory Service
